@@ -1,0 +1,7 @@
+Comarcas agrarias:
+	 Atributo: FEATURE - Descripción: Identificador de feature (objeto geográfico) en el modelo de datos SITNA
+	 Atributo: IDCOMARCA - Descripción: Código de comarca
+	 Atributo: COMARCA - Descripción: Denominación de comarca
+	 Atributo: GEOM_AREA - Descripción: Superficie del objeto geográfico en metros cuadrados (valor calculado de la geometría)
+	 Atributo: GEOM_PERI - Descripción: Perímetro del objeto geográfico en metros (valor calculado de la geometría)
+	 Atributo: BEGINLIFE - Descripción: Fecha de inserción del dato en la base de datos SITNA
