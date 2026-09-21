@@ -1,0 +1,17 @@
+# Credenciales — nunca subir
+credentials/*.json
+.env
+
+# Python
+__pycache__/
+*.pyc
+venv/
+.venv/
+
+# Datos locales
+data/*.csv
+data/*.parquet
+outputs/
+
+# Sistema
+.DS_Store
