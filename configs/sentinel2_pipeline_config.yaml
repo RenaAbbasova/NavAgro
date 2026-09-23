@@ -1,0 +1,53 @@
+# NavAgro — Configuración del pipeline de extracción Sentinel-2
+# Sigue el patrón "config-driven" validado en TerraYield (S3-06-ML-02):
+# nada de rutas, umbrales, ni listas de bandas hardcodeadas en el código.
+
+source:
+  collection: "COPERNICUS/S2_SR_HARMONIZED"
+  comarcas_shapefile: "data/comarcas_agrarias/AGRICU_Pol_ComAgrarias.shp"
+  comarca_name_field: "COMARCA"
+
+# Bandas espectrales usadas. Se excluye EVI deliberadamente -- ver notas.
+bands:
+  red: "B4"
+  nir: "B8"
+  green: "B3"
+  swir1: "B11"
+
+indices:
+  - name: "ndvi"
+    formula: "(nir - red) / (nir + red)"
+  - name: "ndwi"
+    formula: "(green - nir) / (green + nir)"
+  - name: "ndbi"
+    formula: "(swir1 - nir) / (swir1 + nir)"
+
+# EVI excluido a propósito: en TerraYield, un denominador sin proteger en el
+# cálculo de EVI produjo valores fuera de rango en 574/580 filas (hasta
+# -17 millones). Earth Engine's normalizedDifference() ya protege división
+# por cero devolviendo un valor enmascarado, pero EVI usa una fórmula de 3
+# bandas más compleja que no se beneficia de esa protección automática --
+# se omite aquí hasta implementar y probar una guarda de denominador
+# explícita y validada, en vez de asumir que "no va a pasar otra vez".
+
+cloud_masking:
+  scl_band: "SCL"
+  valid_classes: [4, 5, 6, 11]  # vegetación, suelo, agua, nieve
+
+temporal:
+  window_days: 16  # alineado al ciclo de revisita nativo de Sentinel-2
+
+quality_thresholds:
+  min_valid_pixel_fraction: 0.10  # ventanas con <10% píxeles válidos se flaggean, no se excluyen silenciosamente
+  max_cloud_cover_pct: 80  # ventanas por encima de esto se flaggean como baja confianza
+
+output:
+  scale_meters: 10
+  stats: ["mean", "stdDev", "min", "max"]
+  gee_asset_folder: "sentinel2_navarra_comarcas"  # se exporta a Assets, no a Drive
+  # Motivo (lección de TerraYield): el Drive de una cuenta de servicio
+  # pertenece a esa cuenta, no al usuario -- los resultados serían
+  # inaccesibles. Assets evita ese problema por completo.
+
+schema_version: "v1.0"
+data_source_label: "GEE/COPERNICUS/S2_SR_HARMONIZED"
