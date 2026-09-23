@@ -11,7 +11,8 @@ venv/
 # Datos locales
 data/*.csv
 data/*.parquet
-outputs/
+outputs/*
+!outputs/*.csv
 
 # Sistema
 .DS_Store

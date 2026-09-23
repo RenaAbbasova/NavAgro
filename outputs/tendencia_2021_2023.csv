@@ -1,0 +1,64 @@
+COMARCA,GRUPO,count_start,count_end,change,pct_change
+Nordoccidental,Cultivos herbáceos secano,1740,386,-1354,-77.816091954023
+Pirineos,Cultivos herbáceos secano,1363,834,-529,-38.81144534115921
+Cuenca de Pamplona,Coníferas,597,496,-101,-16.917922948073702
+Cuenca de Pamplona,Cultivos herbáceos secano,736,657,-79,-10.733695652173914
+Nordoccidental,Coníferas,1758,1686,-72,-4.09556313993174
+Ribera Baja,Coníferas,508,469,-39,-7.677165354330709
+Cuenca de Pamplona,Frondosas,720,689,-31,-4.305555555555555
+Navarra Media,Coníferas,658,637,-21,-3.1914893617021276
+Tierra Estella,Cultivos herbáceos secano,1148,1128,-20,-1.7421602787456445
+Navarra Media,Frondosas,878,859,-19,-2.164009111617312
+Nordoccidental,Improductivo,1528,1518,-10,-0.6544502617801047
+Navarra Media,Cultivos leñosos secano,784,776,-8,-1.0204081632653061
+Tierra Estella,Cultivos leñosos secano,1412,1405,-7,-0.49575070821529743
+Cuenca de Pamplona,Coníferas/Frondosas,67,61,-6,-8.955223880597014
+Tierra Estella,Coníferas,589,585,-4,-0.6791171477079796
+Tierra Estella,Coníferas/Frondosas,53,49,-4,-7.547169811320755
+Navarra Media,Cultivos herbáceos regadío,422,418,-4,-0.9478672985781991
+Ribera Alta-Aragón,Cultivos herbáceos regadío,814,811,-3,-0.36855036855036855
+Cuenca de Pamplona,Cultivos leñosos secano,164,161,-3,-1.8292682926829267
+Navarra Media,Coníferas/Frondosas,92,89,-3,-3.260869565217391
+Ribera Baja,Cultivos leñosos secano,326,324,-2,-0.6134969325153374
+Nordoccidental,Cultivos herbáceos regadío,26,24,-2,-7.6923076923076925
+Pirineos,Cultivos herbáceos regadío,60,59,-1,-1.6666666666666667
+Ribera Alta-Aragón,Coníferas/Frondosas,7,6,-1,-14.285714285714285
+Pirineos,Cultivos leñosos regadío,10,9,-1,-10.0
+Nordoccidental,Cultivos leñosos regadío,13,12,-1,-7.6923076923076925
+Tierra Estella,Improductivo,1195,1195,0,0.0
+Cuenca de Pamplona,Cultivos herbáceos regadío,138,138,0,0.0
+Ribera Baja,Coníferas/Frondosas,4,4,0,0.0
+Navarra Media,Improductivo,949,949,0,0.0
+Pirineos,Improductivo,725,725,0,0.0
+Pirineos,Cultivos leñosos secano,62,63,1,1.6129032258064515
+Ribera Alta-Aragón,Frondosas,160,162,2,1.25
+Cuenca de Pamplona,Cultivos leñosos regadío,72,75,3,4.166666666666666
+Ribera Alta-Aragón,Coníferas,675,679,4,0.5925925925925926
+Tierra Estella,Cultivos herbáceos regadío,282,286,4,1.4184397163120568
+Ribera Baja,Frondosas,94,98,4,4.25531914893617
+Nordoccidental,Coníferas/Frondosas,181,186,5,2.7624309392265194
+Navarra Media,Cultivos leñosos regadío,537,542,5,0.931098696461825
+Nordoccidental,Cultivos leñosos secano,100,108,8,8.0
+Ribera Alta-Aragón,Cultivos leñosos secano,561,569,8,1.4260249554367201
+Ribera Alta-Aragón,Improductivo,1440,1449,9,0.625
+Navarra Media,Cultivos herbáceos secano,1501,1511,10,0.6662225183211192
+Tierra Estella,Cultivos leñosos regadío,204,214,10,4.901960784313726
+Tierra Estella,Frondosas,1503,1513,10,0.665335994677312
+Pirineos,Coníferas/Frondosas,875,889,14,1.6
+Cuenca de Pamplona,Improductivo,1696,1714,18,1.0613207547169812
+Ribera Baja,Improductivo,1655,1673,18,1.0876132930513596
+Ribera Baja,Cultivos herbáceos secano,1137,1156,19,1.6710642040457344
+Ribera Baja,Cultivos herbáceos regadío,848,877,29,3.4198113207547167
+Pirineos,Frondosas,2857,2893,36,1.2600630031501576
+Ribera Alta-Aragón,Cultivos herbáceos secano,871,930,59,6.77382319173364
+Pirineos,Coníferas,3040,3100,60,1.9736842105263157
+Ribera Baja,Cultivos leñosos regadío,1903,1967,64,3.3631108775617444
+Navarra Media,Forestal no arbolado,2482,2572,90,3.62610797743755
+Cuenca de Pamplona,Forestal no arbolado,1421,1515,94,6.615059817030261
+Ribera Baja,Forestal no arbolado,2547,2649,102,4.004711425206125
+Ribera Alta-Aragón,Cultivos leñosos regadío,1198,1300,102,8.514190317195327
+Ribera Alta-Aragón,Forestal no arbolado,1943,2047,104,5.352547606793618
+Tierra Estella,Forestal no arbolado,2617,2754,137,5.235001910584639
+Nordoccidental,Frondosas,5000,5144,144,2.88
+Pirineos,Forestal no arbolado,4210,4979,769,18.26603325415677
+Nordoccidental,Forestal no arbolado,2595,4099,1504,57.95761078998073
