@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>NavAgro — Analítica de IA para Navarra</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,400;9..144,500;9..144,600;9..144,700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+<style>
+  :root {
+    --trigo: #C9A03E;
+    --oliva: #4A5D3A;
+    --tierra: #2B2420;
+    --crema: #F2EDE4;
+    --pizarra: #3D5A6C;
+    --terracota: #B85C38;
+    --crema-alt: #E8E0D0;
+    --tierra-soft: #4A3F36;
+    box-sizing: border-box;
+    padding-top: env(safe-area-inset-top, 0px);
+    padding-bottom: env(safe-area-inset-bottom, 0px);
+  }
+  html { scroll-padding-top: env(safe-area-inset-top, 0px); }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--crema);
+    color: var(--tierra);
+    font-family: 'Inter', -apple-system, sans-serif;
+    line-height: 1.6;
+  }
+  h1, h2, h3, .display {
+    font-family: 'Fraunces', Georgia, serif;
+    font-weight: 600;
+    color: var(--tierra);
+    line-height: 1.15;
+    margin: 0;
+  }
+  .wrap { max-width: 1040px; margin: 0 auto; padding: 0 24px; }
+  a { color: var(--pizarra); }
+
+  /* ---- Hero ---- */
+  header.hero {
+    background: var(--tierra);
+    color: var(--crema);
+    padding: 72px 0 64px;
+    position: relative;
+    overflow: hidden;
+  }
+  header.hero::before {
+    content: "";
+    position: absolute;
+    top: -40%;
+    right: -10%;
+    width: 60%;
+    height: 180%;
+    background: radial-gradient(circle, rgba(201,160,62,0.16) 0%, transparent 65%);
+  }
+  .eyebrow {
+    color: var(--trigo);
+    font-size: 0.95rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+    margin-bottom: 14px;
+  }
+  h1.display {
+    font-size: clamp(2.1rem, 4.4vw, 3.4rem);
+    color: #FBF8F2;
+    max-width: 16ch;
+    margin-bottom: 20px;
+  }
+  .hero-sub {
+    font-size: 1.15rem;
+    color: var(--crema-alt);
+    max-width: 62ch;
+    margin-bottom: 36px;
+  }
+  .hero-stats {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1px;
+    background: rgba(242,237,228,0.14);
+    border-radius: 10px;
+    overflow: hidden;
+    max-width: 720px;
+  }
+  .hero-stat {
+    background: rgba(43,36,32,0.55);
+    padding: 20px 18px;
+  }
+  .hero-stat .num {
+    font-family: 'Fraunces', serif;
+    font-size: 1.9rem;
+    font-weight: 600;
+    color: var(--trigo);
+  }
+  .hero-stat .label {
+    font-size: 0.85rem;
+    color: var(--crema-alt);
+    margin-top: 4px;
+  }
+
+  /* ---- Sections ---- */
+  section { padding: 64px 0; }
+  section.alt { background: var(--crema-alt); }
+  h2.section-title {
+    font-size: clamp(1.5rem, 2.6vw, 2rem);
+    margin-bottom: 12px;
+  }
+  .section-intro {
+    max-width: 68ch;
+    color: var(--tierra-soft);
+    margin-bottom: 36px;
+    font-size: 1.02rem;
+  }
+
+  /* ---- Finding callout ---- */
+  .finding-grid {
+    display: grid;
+    grid-template-columns: 1.1fr 1fr;
+    gap: 40px;
+    align-items: start;
+  }
+  @media (max-width: 780px) { .finding-grid { grid-template-columns: 1fr; } }
+  .finding-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.95rem;
+  }
+  .finding-table th {
+    text-align: left;
+    font-weight: 600;
+    color: var(--tierra-soft);
+    padding: 10px 12px;
+    border-bottom: 2px solid var(--tierra);
+    font-size: 0.82rem;
+    text-transform: none;
+  }
+  .finding-table td {
+    padding: 12px;
+    border-bottom: 1px solid rgba(43,36,32,0.12);
+  }
+  .finding-table tr:last-child td { border-bottom: none; }
+  .delta-up { color: var(--oliva); font-weight: 600; }
+  .delta-down { color: var(--terracota); font-weight: 600; }
+
+  .callout {
+    background: #fff;
+    border-left: 4px solid var(--trigo);
+    padding: 22px 24px;
+    border-radius: 4px;
+    font-size: 0.98rem;
+    color: var(--tierra-soft);
+  }
+  .callout strong { color: var(--tierra); }
+  .source-tag {
+    display: inline-block;
+    margin-top: 14px;
+    font-size: 0.82rem;
+    color: var(--pizarra);
+    font-style: italic;
+  }
+
+  /* ---- Chart cards ---- */
+  .chart-card {
+    background: #fff;
+    border-radius: 6px;
+    padding: 24px;
+    margin-bottom: 28px;
+  }
+  .chart-card h3 {
+    font-size: 1.15rem;
+    margin-bottom: 4px;
+  }
+  .chart-card .chart-note {
+    font-size: 0.88rem;
+    color: var(--tierra-soft);
+    margin-bottom: 18px;
+  }
+  .chart-wrap { position: relative; height: 320px; }
+  .chart-wrap.short { height: 260px; }
+
+  /* ---- Model table ---- */
+  table.model-table {
+    width: 100%;
+    border-collapse: collapse;
+    background: #fff;
+    border-radius: 6px;
+    overflow: hidden;
+  }
+  table.model-table th {
+    background: var(--tierra);
+    color: var(--crema);
+    text-align: left;
+    padding: 13px 16px;
+    font-weight: 600;
+    font-size: 0.9rem;
+  }
+  table.model-table td {
+    padding: 13px 16px;
+    border-bottom: 1px solid rgba(43,36,32,0.1);
+    font-size: 0.95rem;
+  }
+  table.model-table tr.winner td { background: rgba(74,93,58,0.08); font-weight: 600; }
+  .r2-pos { color: var(--oliva); }
+  .r2-neg { color: var(--terracota); }
+
+  /* ---- Change signal ---- */
+  .signal-bars { display: flex; flex-direction: column; gap: 10px; }
+  .signal-row { display: grid; grid-template-columns: 160px 1fr 70px; align-items: center; gap: 12px; }
+  .signal-name { font-size: 0.92rem; font-weight: 500; }
+  .signal-track { background: rgba(43,36,32,0.08); border-radius: 4px; height: 22px; overflow: hidden; }
+  .signal-fill { height: 100%; border-radius: 4px; background: var(--pizarra); }
+  .signal-fill.flagged { background: var(--terracota); }
+  .signal-val { font-size: 0.85rem; text-align: right; color: var(--tierra-soft); }
+
+  /* ---- Methodology ---- */
+  .method-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 18px;
+  }
+  @media (max-width: 780px) { .method-grid { grid-template-columns: 1fr; } }
+  .method-item {
+    background: #fff;
+    padding: 20px;
+    border-radius: 6px;
+    border-top: 3px solid var(--oliva);
+  }
+  .method-item h4 {
+    font-family: 'Fraunces', serif;
+    font-size: 1.02rem;
+    margin: 0 0 8px;
+    color: var(--tierra);
+  }
+  .method-item p { margin: 0; font-size: 0.9rem; color: var(--tierra-soft); }
+
+  /* ---- Footer ---- */
+  footer {
+    background: var(--tierra);
+    color: var(--crema-alt);
+    padding: 40px 0;
+    font-size: 0.9rem;
+  }
+  footer a { color: var(--trigo); text-decoration: none; }
+  footer a:hover { text-decoration: underline; }
+  .footer-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 12px;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --crema: #1C1815;
+      --crema-alt: #24201C;
+      --tierra: #F2EDE4;
+      --tierra-soft: #C9C2B5;
+    }
+    :root:not([data-theme="light"]) .chart-card,
+    :root:not([data-theme="light"]) .callout,
+    :root:not([data-theme="light"]) table.model-table,
+    :root:not([data-theme="light"]) .method-item {
+      background: #2B2622;
+    }
+    :root:not([data-theme="light"]) .finding-table td {
+      border-bottom-color: rgba(242,237,228,0.12);
+    }
+  }
+</style>
+</head>
+<body>
+
+<header class="hero">
+  <div class="wrap">
+    <div class="eyebrow">Navarra, España — Proyecto de investigación personal</div>
+    <h1 class="display">Uso de suelo agrícola y rendimiento de cultivos, medidos con datos reales</h1>
+    <p class="hero-sub">Sentinel-2, estadísticas oficiales de Nastat y cartografía del Gobierno de Navarra, combinadas para analizar las 7 comarcas agrarias de Navarra entre 2019 y 2023.</p>
+    <div class="hero-stats">
+      <div class="hero-stat"><div class="num">7</div><div class="label">comarcas analizadas</div></div>
+      <div class="hero-stat"><div class="num">−77.8%</div><div class="label">parcelas de secano, Nordoccidental</div></div>
+      <div class="hero-stat"><div class="num">R² 0.585</div><div class="label">mejor modelo, honesto</div></div>
+    </div>
+  </div>
+</header>
+
+<section>
+  <div class="wrap">
+    <h2 class="section-title">El caso de Nordoccidental</h2>
+    <p class="section-intro">Entre 2021 y 2023, esta comarca del noroeste de Navarra muestra el cambio más marcado de todo el proyecto — pero la historia es más matizada que un simple abandono agrícola.</p>
+
+    <div class="finding-grid">
+      <table class="finding-table">
+        <thead><tr><th>Indicador</th><th>2021</th><th>2023</th></tr></thead>
+        <tbody id="finding-body"></tbody>
+      </table>
+
+      <div class="callout">
+        <p><strong>Causa verificada, no solo inferida:</strong> 2023 fue "la peor campaña cerealista en 20 años" en Navarra, por sequía severa en invierno-primavera (INTIA). La zona noroeste, donde está Nordoccidental, tuvo temperaturas más frescas que el resto de la región — lo que explica por qué el trigo blando sube aquí mientras Navarra en general perdía cosecha de cereal.</p>
+        <span class="source-tag">Fuente: INTIA, vía orain.eus, agosto 2023</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="alt">
+  <div class="wrap">
+    <h2 class="section-title">Track A — Predicción de rendimiento</h2>
+    <p class="section-intro">Tres modelos, evaluados con una división temporal honesta: se entrena con 2019 y 2021, se evalúa contra 2023 — nunca una mezcla aleatoria que filtraría información entre años.</p>
+
+    <table class="model-table" style="margin-bottom: 32px;">
+      <thead><tr><th>Modelo</th><th>MAE (t)</th><th>RMSE (t)</th><th>R²</th></tr></thead>
+      <tbody id="model-body"></tbody>
+    </table>
+
+    <div class="chart-card">
+      <h3>Producción real vs. NDVI medio anual, por comarca</h3>
+      <div class="chart-note">Trigo blando, 2019–2023. El NDVI mejora en casi todas las comarcas, pero la producción no siempre sigue el mismo patrón — la razón por la que un modelo de una sola variable no basta todavía.</div>
+      <div class="chart-wrap"><canvas id="chartProdNdvi"></canvas></div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2 class="section-title">Track B — Tendencia de uso de suelo</h2>
+    <p class="section-intro">En vez de medir un cambio binario, esta señal cuantifica la intensidad de cambio por comarca (2019→2023), combinando la pérdida de cultivo de secano y la ganancia de terreno forestal.</p>
+
+    <div class="chart-card">
+      <h3>Puntuación de cambio, por comarca</h3>
+      <div class="chart-note">Nordoccidental es la única comarca que supera el umbral estadístico de anomalía (z > 1.5) — más del doble que la siguiente.</div>
+      <div class="signal-bars" id="signal-bars"></div>
+    </div>
+
+    <div class="chart-card">
+      <h3>Parcelas de cultivo de secano vs. terreno forestal</h3>
+      <div class="chart-note">Recuento de parcelas, 2019 vs. 2023, comarca por comarca.</div>
+      <div class="chart-wrap"><canvas id="chartTrend"></canvas></div>
+    </div>
+  </div>
+</section>
+
+<section class="alt">
+  <div class="wrap">
+    <h2 class="section-title">Rigor metodológico</h2>
+    <p class="section-intro">Decisiones de ingeniería tomadas desde el diseño, aplicando lecciones de un proyecto anterior (TerraYield) — no correcciones posteriores a errores encontrados.</p>
+    <div class="method-grid">
+      <div class="method-item"><h4>Manifiesto desde el inicio</h4><p>Cada archivo crudo tiene checksum SHA-256, fuente y fecha registrados desde el primer commit, no añadidos después.</p></div>
+      <div class="method-item"><h4>Sin datos fabricados</h4><p>Comarcas o ventanas sin escenas satelitales válidas se omiten explícitamente — nunca se rellenan con un valor placeholder.</p></div>
+      <div class="method-item"><h4>Denominador protegido</h4><p>Los índices espectrales se diseñaron evitando el tipo de bug que en un proyecto anterior produjo valores erróneos de hasta -17 millones.</p></div>
+      <div class="method-item"><h4>División temporal honesta</h4><p>Los modelos se evalúan con leave-most-recent-year-out, no con una mezcla aleatoria que filtraría información entre años.</p></div>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <div class="wrap footer-row">
+    <div>NavAgro — proyecto personal de investigación. Fuentes: Nastat, Gobierno de Navarra (IDENA), ESA Copernicus.</div>
+    <div><a href="https://github.com/RenaAbbasova/NavAgro">Ver repositorio en GitHub →</a></div>
+  </div>
+</footer>
+
+<script>
+const modeling = [{"comarca": "Cuenca de Pamplona", "cultivo": "Cebada", "year": "2019", "produccion_tn": "53759.834", "ndvi_mean_annual": "0.45935852957833395", "ndwi_mean_annual": "-0.4706230128239919", "ndbi_mean_annual": "-0.1700292672759298", "cloud_cover_pct_annual": "48.41663742572464", "valid_pixel_count_annual": "199956215", "window_count": "23"}, {"comarca": "Cuenca de Pamplona", "cultivo": "Cebada", "year": "2021", "produccion_tn": "38739.14399999999", "ndvi_mean_annual": "0.46452352378554734", "ndwi_mean_annual": "-0.4736667865855619", "ndbi_mean_annual": "-0.1636933086403111", "cloud_cover_pct_annual": "51.47082090978261", "valid_pixel_count_annual": "190503404", "window_count": "23"}, {"comarca": "Cuenca de Pamplona", "cultivo": "Cebada", "year": "2023", "produccion_tn": "46335.68400000001", "ndvi_mean_annual": "0.4944876405768749", "ndwi_mean_annual": "-0.506599416737463", "ndbi_mean_annual": "-0.09589569806280906", "cloud_cover_pct_annual": "55.07404243115942", "valid_pixel_count_annual": "193990862", "window_count": "23"}, {"comarca": "Cuenca de Pamplona", "cultivo": "Trigo blando", "year": "2019", "produccion_tn": "90930.424", "ndvi_mean_annual": "0.45935852957833395", "ndwi_mean_annual": "-0.4706230128239919", "ndbi_mean_annual": "-0.1700292672759298", "cloud_cover_pct_annual": "48.41663742572464", "valid_pixel_count_annual": "199956215", "window_count": "23"}, {"comarca": "Cuenca de Pamplona", "cultivo": "Trigo blando", "year": "2021", "produccion_tn": "71253.488", "ndvi_mean_annual": "0.46452352378554734", "ndwi_mean_annual": "-0.4736667865855619", "ndbi_mean_annual": "-0.1636933086403111", "cloud_cover_pct_annual": "51.47082090978261", "valid_pixel_count_annual": "190503404", "window_count": "23"}, {"comarca": "Cuenca de Pamplona", "cultivo": "Trigo blando", "year": "2023", "produccion_tn": "62335.04", "ndvi_mean_annual": "0.4944876405768749", "ndwi_mean_annual": "-0.506599416737463", "ndbi_mean_annual": "-0.09589569806280906", "cloud_cover_pct_annual": "55.07404243115942", "valid_pixel_count_annual": "193990862", "window_count": "23"}, {"comarca": "Navarra Media", "cultivo": "Cebada", "year": "2019", "produccion_tn": "68958.71100000001", "ndvi_mean_annual": "0.45153904897939734", "ndwi_mean_annual": "-0.4820139857778845", "ndbi_mean_annual": "-0.09742561510737667", "cloud_cover_pct_annual": "41.38712650163043", "valid_pixel_count_annual": "350363075", "window_count": "23"}, {"comarca": "Navarra Media", "cultivo": "Cebada", "year": "2021", "produccion_tn": "61070.73", "ndvi_mean_annual": "0.46937302881561255", "ndwi_mean_annual": "-0.4954319436215023", "ndbi_mean_annual": "-0.08779457783098885", "cloud_cover_pct_annual": "46.989504467366054", "valid_pixel_count_annual": "342182225", "window_count": "23"}, {"comarca": "Navarra Media", "cultivo": "Cebada", "year": "2023", "produccion_tn": "47463.255", "ndvi_mean_annual": "0.45857886553254656", "ndwi_mean_annual": "-0.488778414369854", "ndbi_mean_annual": "-0.04839243790789788", "cloud_cover_pct_annual": "46.21098330900307", "valid_pixel_count_annual": "349782312", "window_count": "23"}, {"comarca": "Navarra Media", "cultivo": "Trigo blando", "year": "2019", "produccion_tn": "95798.99300000002", "ndvi_mean_annual": "0.45153904897939734", "ndwi_mean_annual": "-0.4820139857778845", "ndbi_mean_annual": "-0.09742561510737667", "cloud_cover_pct_annual": "41.38712650163043", "valid_pixel_count_annual": "350363075", "window_count": "23"}, {"comarca": "Navarra Media", "cultivo": "Trigo blando", "year": "2021", "produccion_tn": "97747.438", "ndvi_mean_annual": "0.46937302881561255", "ndwi_mean_annual": "-0.4954319436215023", "ndbi_mean_annual": "-0.08779457783098885", "cloud_cover_pct_annual": "46.989504467366054", "valid_pixel_count_annual": "342182225", "window_count": "23"}, {"comarca": "Navarra Media", "cultivo": "Trigo blando", "year": "2023", "produccion_tn": "73443.67", "ndvi_mean_annual": "0.45857886553254656", "ndwi_mean_annual": "-0.488778414369854", "ndbi_mean_annual": "-0.04839243790789788", "cloud_cover_pct_annual": "46.21098330900307", "valid_pixel_count_annual": "349782312", "window_count": "23"}, {"comarca": "Nordoccidental", "cultivo": "Cebada", "year": "2019", "produccion_tn": "2320.85", "ndvi_mean_annual": "0.59265140740926", "ndwi_mean_annual": "-0.5696146830216436", "ndbi_mean_annual": "-0.24004358257764213", "cloud_cover_pct_annual": "49.37064073514493", "valid_pixel_count_annual": "448142745", "window_count": "23"}, {"comarca": "Nordoccidental", "cultivo": "Cebada", "year": "2021", "produccion_tn": "2116.4", "ndvi_mean_annual": "0.5758643658220478", "ndwi_mean_annual": "-0.5466999499135005", "ndbi_mean_annual": "-0.26238833336426465", "cloud_cover_pct_annual": "51.86268109963768", "valid_pixel_count_annual": "468872247", "window_count": "23"}, {"comarca": "Nordoccidental", "cultivo": "Cebada", "year": "2023", "produccion_tn": "1854.417", "ndvi_mean_annual": "0.6502257343454945", "ndwi_mean_annual": "-0.6245036669746152", "ndbi_mean_annual": "-0.20975941402649123", "cloud_cover_pct_annual": "57.492389892080745", "valid_pixel_count_annual": "423014179", "window_count": "23"}, {"comarca": "Nordoccidental", "cultivo": "Trigo blando", "year": "2019", "produccion_tn": "3907.916", "ndvi_mean_annual": "0.59265140740926", "ndwi_mean_annual": "-0.5696146830216436", "ndbi_mean_annual": "-0.24004358257764213", "cloud_cover_pct_annual": "49.37064073514493", "valid_pixel_count_annual": "448142745", "window_count": "23"}, {"comarca": "Nordoccidental", "cultivo": "Trigo blando", "year": "2021", "produccion_tn": "4130.04", "ndvi_mean_annual": "0.5758643658220478", "ndwi_mean_annual": "-0.5466999499135005", "ndbi_mean_annual": "-0.26238833336426465", "cloud_cover_pct_annual": "51.86268109963768", "valid_pixel_count_annual": "468872247", "window_count": "23"}, {"comarca": "Nordoccidental", "cultivo": "Trigo blando", "year": "2023", "produccion_tn": "4494.9", "ndvi_mean_annual": "0.6502257343454945", "ndwi_mean_annual": "-0.6245036669746152", "ndbi_mean_annual": "-0.20975941402649123", "cloud_cover_pct_annual": "57.492389892080745", "valid_pixel_count_annual": "423014179", "window_count": "23"}, {"comarca": "Pirineos", "cultivo": "Cebada", "year": "2019", "produccion_tn": "29105.854", "ndvi_mean_annual": "0.5775311034607943", "ndwi_mean_annual": "-0.5512368478398961", "ndbi_mean_annual": "-0.25926411476716554", "cloud_cover_pct_annual": "43.396471126863354", "valid_pixel_count_annual": "592904106", "window_count": "23"}, {"comarca": "Pirineos", "cultivo": "Cebada", "year": "2021", "produccion_tn": "20625.823999999997", "ndvi_mean_annual": "0.5917996027291348", "ndwi_mean_annual": "-0.5610785517802676", "ndbi_mean_annual": "-0.25782262851735127", "cloud_cover_pct_annual": "48.5662440146998", "valid_pixel_count_annual": "603094139", "window_count": "23"}, {"comarca": "Pirineos", "cultivo": "Cebada", "year": "2023", "produccion_tn": "21274.32", "ndvi_mean_annual": "0.6325913208332113", "ndwi_mean_annual": "-0.6010033148560828", "ndbi_mean_annual": "-0.245848948727027", "cloud_cover_pct_annual": "52.26054838819876", "valid_pixel_count_annual": "598171930", "window_count": "23"}, {"comarca": "Pirineos", "cultivo": "Trigo blando", "year": "2019", "produccion_tn": "63755.215", "ndvi_mean_annual": "0.5775311034607943", "ndwi_mean_annual": "-0.5512368478398961", "ndbi_mean_annual": "-0.25926411476716554", "cloud_cover_pct_annual": "43.396471126863354", "valid_pixel_count_annual": "592904106", "window_count": "23"}, {"comarca": "Pirineos", "cultivo": "Trigo blando", "year": "2021", "produccion_tn": "49465.043", "ndvi_mean_annual": "0.5917996027291348", "ndwi_mean_annual": "-0.5610785517802676", "ndbi_mean_annual": "-0.25782262851735127", "cloud_cover_pct_annual": "48.5662440146998", "valid_pixel_count_annual": "603094139", "window_count": "23"}, {"comarca": "Pirineos", "cultivo": "Trigo blando", "year": "2023", "produccion_tn": "44307.604", "ndvi_mean_annual": "0.6325913208332113", "ndwi_mean_annual": "-0.6010033148560828", "ndbi_mean_annual": "-0.245848948727027", "cloud_cover_pct_annual": "52.26054838819876", "valid_pixel_count_annual": "598171930", "window_count": "23"}, {"comarca": "Ribera Alta-Arag\u00f3n", "cultivo": "Cebada", "year": "2019", "produccion_tn": "60583.624", "ndvi_mean_annual": "0.34413996540468084", "ndwi_mean_annual": "-0.40532557284965237", "ndbi_mean_annual": "-0.01736553127312239", "cloud_cover_pct_annual": "42.6455511531406", "valid_pixel_count_annual": "327193482", "window_count": "23"}, {"comarca": "Ribera Alta-Arag\u00f3n", "cultivo": "Cebada", "year": "2021", "produccion_tn": "53387.708", "ndvi_mean_annual": "0.37350082882078167", "ndwi_mean_annual": "-0.4310354248645016", "ndbi_mean_annual": "-0.008795520341710905", "cloud_cover_pct_annual": "46.77594455588577", "valid_pixel_count_annual": "316899967", "window_count": "23"}, {"comarca": "Ribera Alta-Arag\u00f3n", "cultivo": "Cebada", "year": "2023", "produccion_tn": "41238.978", "ndvi_mean_annual": "0.36544231829214935", "ndwi_mean_annual": "-0.4239330653084185", "ndbi_mean_annual": "0.01445564549789634", "cloud_cover_pct_annual": "46.44403576346154", "valid_pixel_count_annual": "349866935", "window_count": "23"}, {"comarca": "Ribera Alta-Arag\u00f3n", "cultivo": "Trigo blando", "year": "2019", "produccion_tn": "48794.246", "ndvi_mean_annual": "0.34413996540468084", "ndwi_mean_annual": "-0.40532557284965237", "ndbi_mean_annual": "-0.01736553127312239", "cloud_cover_pct_annual": "42.6455511531406", "valid_pixel_count_annual": "327193482", "window_count": "23"}, {"comarca": "Ribera Alta-Arag\u00f3n", "cultivo": "Trigo blando", "year": "2021", "produccion_tn": "58872.97900000001", "ndvi_mean_annual": "0.37350082882078167", "ndwi_mean_annual": "-0.4310354248645016", "ndbi_mean_annual": "-0.008795520341710905", "cloud_cover_pct_annual": "46.77594455588577", "valid_pixel_count_annual": "316899967", "window_count": "23"}, {"comarca": "Ribera Alta-Arag\u00f3n", "cultivo": "Trigo blando", "year": "2023", "produccion_tn": "41380.878", "ndvi_mean_annual": "0.36544231829214935", "ndwi_mean_annual": "-0.4239330653084185", "ndbi_mean_annual": "0.01445564549789634", "cloud_cover_pct_annual": "46.44403576346154", "valid_pixel_count_annual": "349866935", "window_count": "23"}, {"comarca": "Ribera Baja", "cultivo": "Cebada", "year": "2019", "produccion_tn": "31143.445", "ndvi_mean_annual": "0.2873837335893044", "ndwi_mean_annual": "-0.3620640243671747", "ndbi_mean_annual": "0.012765180684953569", "cloud_cover_pct_annual": "38.898451885192344", "valid_pixel_count_annual": "368151631", "window_count": "23"}, {"comarca": "Ribera Baja", "cultivo": "Cebada", "year": "2021", "produccion_tn": "23114.032", "ndvi_mean_annual": "0.30810802677667387", "ndwi_mean_annual": "-0.3786063113663798", "ndbi_mean_annual": "0.021497862335431443", "cloud_cover_pct_annual": "45.21585855333435", "valid_pixel_count_annual": "349882334", "window_count": "23"}, {"comarca": "Ribera Baja", "cultivo": "Cebada", "year": "2023", "produccion_tn": "21474.709000000003", "ndvi_mean_annual": "0.2797526579098172", "ndwi_mean_annual": "-0.36176017161805557", "ndbi_mean_annual": "0.053995174435082324", "cloud_cover_pct_annual": "41.93736266025641", "valid_pixel_count_annual": "393262832", "window_count": "23"}, {"comarca": "Ribera Baja", "cultivo": "Trigo blando", "year": "2019", "produccion_tn": "25431.199", "ndvi_mean_annual": "0.2873837335893044", "ndwi_mean_annual": "-0.3620640243671747", "ndbi_mean_annual": "0.012765180684953569", "cloud_cover_pct_annual": "38.898451885192344", "valid_pixel_count_annual": "368151631", "window_count": "23"}, {"comarca": "Ribera Baja", "cultivo": "Trigo blando", "year": "2021", "produccion_tn": "26353.429999999997", "ndvi_mean_annual": "0.30810802677667387", "ndwi_mean_annual": "-0.3786063113663798", "ndbi_mean_annual": "0.021497862335431443", "cloud_cover_pct_annual": "45.21585855333435", "valid_pixel_count_annual": "349882334", "window_count": "23"}, {"comarca": "Ribera Baja", "cultivo": "Trigo blando", "year": "2023", "produccion_tn": "20005.436", "ndvi_mean_annual": "0.2797526579098172", "ndwi_mean_annual": "-0.36176017161805557", "ndbi_mean_annual": "0.053995174435082324", "cloud_cover_pct_annual": "41.93736266025641", "valid_pixel_count_annual": "393262832", "window_count": "23"}, {"comarca": "Tierra Estella", "cultivo": "Cebada", "year": "2019", "produccion_tn": "74029.97", "ndvi_mean_annual": "0.48089526592455045", "ndwi_mean_annual": "-0.49849498493248", "ndbi_mean_annual": "-0.1334717457285716", "cloud_cover_pct_annual": "50.59107208333333", "valid_pixel_count_annual": "397486182", "window_count": "23"}, {"comarca": "Tierra Estella", "cultivo": "Cebada", "year": "2021", "produccion_tn": "69050.715", "ndvi_mean_annual": "0.47330818449781853", "ndwi_mean_annual": "-0.48790140085602735", "ndbi_mean_annual": "-0.14350630273063328", "cloud_cover_pct_annual": "53.541443880434784", "valid_pixel_count_annual": "396487247", "window_count": "23"}, {"comarca": "Tierra Estella", "cultivo": "Cebada", "year": "2023", "produccion_tn": "59858.463", "ndvi_mean_annual": "0.5116310543497654", "ndwi_mean_annual": "-0.5289581660404445", "ndbi_mean_annual": "-0.08202958442748762", "cloud_cover_pct_annual": "56.63336957971014", "valid_pixel_count_annual": "394406974", "window_count": "23"}, {"comarca": "Tierra Estella", "cultivo": "Trigo blando", "year": "2019", "produccion_tn": "99254.90200000002", "ndvi_mean_annual": "0.48089526592455045", "ndwi_mean_annual": "-0.49849498493248", "ndbi_mean_annual": "-0.1334717457285716", "cloud_cover_pct_annual": "50.59107208333333", "valid_pixel_count_annual": "397486182", "window_count": "23"}, {"comarca": "Tierra Estella", "cultivo": "Trigo blando", "year": "2021", "produccion_tn": "107675.356", "ndvi_mean_annual": "0.47330818449781853", "ndwi_mean_annual": "-0.48790140085602735", "ndbi_mean_annual": "-0.14350630273063328", "cloud_cover_pct_annual": "53.541443880434784", "valid_pixel_count_annual": "396487247", "window_count": "23"}, {"comarca": "Tierra Estella", "cultivo": "Trigo blando", "year": "2023", "produccion_tn": "72857.884", "ndvi_mean_annual": "0.5116310543497654", "ndwi_mean_annual": "-0.5289581660404445", "ndbi_mean_annual": "-0.08202958442748762", "cloud_cover_pct_annual": "56.63336957971014", "valid_pixel_count_annual": "394406974", "window_count": "23"}];
+const signal = [{"COMARCA": "Nordoccidental", "land_use_change_score": "135.21113785759565", "z_score": "2.0998370197250944", "change_candidate_flag": "True"}, {"COMARCA": "Pirineos", "land_use_change_score": "57.78061598068628", "z_score": "0.47612981692612644", "change_candidate_flag": "False"}, {"COMARCA": "Cuenca de Pamplona", "land_use_change_score": "16.72281588320963", "z_score": "-0.3848465026617891", "change_candidate_flag": "False"}, {"COMARCA": "Ribera Alta-Arag\u00f3n", "land_use_change_score": "14.018092906594166", "z_score": "-0.4415641647962095", "change_candidate_flag": "False"}, {"COMARCA": "Tierra Estella", "land_use_change_score": "7.990207157551591", "z_score": "-0.567968084996164", "change_candidate_flag": "False"}, {"COMARCA": "Ribera Baja", "land_use_change_score": "7.419932574799831", "z_score": "-0.5799266631529689", "change_candidate_flag": "False"}, {"COMARCA": "Navarra Media", "land_use_change_score": "6.383456513428219", "z_score": "-0.6016614210440902", "change_candidate_flag": "False"}];
+const baseline = [{"model": "Historical Mean", "MAE": "11320.553642857145", "RMSE": "14421.420486464098", "R2": "0.5851291390686253"}, {"model": "Linear Regression (NDVI)", "MAE": "20310.74776233756", "RMSE": "24418.667842770235", "R2": "-0.18943520258954516"}, {"model": "Linear Regression (NDVI+NDWI+NDBI)", "MAE": "38019.92150569976", "RMSE": "43172.2908190838", "R2": "-2.7179799278385683"}];
+const trend = [{"COMARCA": "Nordoccidental", "GRUPO": "Cultivos herb\u00e1ceos secano", "count_start": "1753.0", "count_end": "386.0", "change": "-1367.0", "pct_change": "-77.98060467769538"}, {"COMARCA": "Pirineos", "GRUPO": "Cultivos herb\u00e1ceos secano", "count_start": "1368.0", "count_end": "834.0", "change": "-534.0", "pct_change": "-39.03508771929825"}, {"COMARCA": "Cuenca de Pamplona", "GRUPO": "Cultivos herb\u00e1ceos secano", "count_start": "726.0", "count_end": "657.0", "change": "-69.0", "pct_change": "-9.50413223140496"}, {"COMARCA": "Tierra Estella", "GRUPO": "Cultivos herb\u00e1ceos secano", "count_start": "1159.0", "count_end": "1128.0", "change": "-31.0", "pct_change": "-2.6747195858498705"}, {"COMARCA": "Navarra Media", "GRUPO": "Cultivos herb\u00e1ceos secano", "count_start": "1499.0", "count_end": "1511.0", "change": "12.0", "pct_change": "0.8005336891260841"}, {"COMARCA": "Ribera Baja", "GRUPO": "Cultivos herb\u00e1ceos secano", "count_start": "1130.0", "count_end": "1156.0", "change": "26.0", "pct_change": "2.3008849557522124"}, {"COMARCA": "Ribera Alta-Arag\u00f3n", "GRUPO": "Cultivos herb\u00e1ceos secano", "count_start": "865.0", "count_end": "930.0", "change": "65.0", "pct_change": "7.514450867052023"}, {"COMARCA": "Cuenca de Pamplona", "GRUPO": "Forestal no arbolado", "count_start": "1413.0", "count_end": "1515.0", "change": "102.0", "pct_change": "7.218683651804671"}, {"COMARCA": "Ribera Alta-Arag\u00f3n", "GRUPO": "Forestal no arbolado", "count_start": "1922.0", "count_end": "2047.0", "change": "125.0", "pct_change": "6.503642039542143"}, {"COMARCA": "Ribera Baja", "GRUPO": "Forestal no arbolado", "count_start": "2520.0", "count_end": "2649.0", "change": "129.0", "pct_change": "5.119047619047619"}, {"COMARCA": "Navarra Media", "GRUPO": "Forestal no arbolado", "count_start": "2436.0", "count_end": "2572.0", "change": "136.0", "pct_change": "5.582922824302135"}, {"COMARCA": "Tierra Estella", "GRUPO": "Forestal no arbolado", "count_start": "2615.0", "count_end": "2754.0", "change": "139.0", "pct_change": "5.315487571701721"}, {"COMARCA": "Pirineos", "GRUPO": "Forestal no arbolado", "count_start": "4193.0", "count_end": "4979.0", "change": "786.0", "pct_change": "18.745528261388028"}, {"COMARCA": "Nordoccidental", "GRUPO": "Forestal no arbolado", "count_start": "2607.0", "count_end": "4099.0", "change": "1492.0", "pct_change": "57.23053317990027"}];
+
+const COLORS = {
+  trigo: '#C9A03E', oliva: '#4A5D3A', tierra: '#2B2420',
+  pizarra: '#3D5A6C', terracota: '#B85C38'
+};
+
+// ---- Finding table (hardcoded, verified figures) ----
+const findingRows = [
+  ['Parcelas cultivo secano', '1,740', '386', 'down', '−77.8%'],
+  ['Parcelas forestal no arbolado', '2,595', '4,099', 'up', '+58.0%'],
+  ['Producción cebada (t)', '2,116', '1,854', 'down', '−12.4%'],
+  ['Producción trigo blando (t)', '4,130', '4,495', 'up', '+8.8%'],
+  ['NDVI medio anual', '0.576', '0.650', 'up', '+12.9%'],
+];
+document.getElementById('finding-body').innerHTML = findingRows.map(r =>
+  `<tr><td>${r[0]}</td><td>${r[1]}</td><td>${r[2]} <span class="delta-${r[3]}">(${r[4]})</span></td></tr>`
+).join('');
+
+// ---- Model comparison table ----
+const modelLabels = {
+  'Historical Mean': 'Media Histórica',
+  'Linear Regression (NDVI)': 'Regresión Lineal (NDVI)',
+  'Linear Regression (NDVI+NDWI+NDBI)': 'Regresión Lineal (NDVI+NDWI+NDBI)'
+};
+let bestR2 = Math.max(...baseline.map(m => parseFloat(m.R2)));
+document.getElementById('model-body').innerHTML = baseline.map(m => {
+  const r2 = parseFloat(m.R2);
+  const isWinner = r2 === bestR2;
+  return `<tr class="${isWinner ? 'winner' : ''}">
+    <td>${modelLabels[m.model] || m.model}</td>
+    <td>${Math.round(parseFloat(m.MAE)).toLocaleString('es-ES')}</td>
+    <td>${Math.round(parseFloat(m.RMSE)).toLocaleString('es-ES')}</td>
+    <td class="${r2 >= 0 ? 'r2-pos' : 'r2-neg'}">${r2.toFixed(3)}</td>
+  </tr>`;
+}).join('');
+
+// ---- Change signal bars ----
+const maxScore = Math.max(...signal.map(s => parseFloat(s.land_use_change_score)));
+const sortedSignal = [...signal].sort((a,b) => parseFloat(b.land_use_change_score) - parseFloat(a.land_use_change_score));
+document.getElementById('signal-bars').innerHTML = sortedSignal.map(s => {
+  const score = parseFloat(s.land_use_change_score);
+  const pct = (score / maxScore * 100).toFixed(1);
+  const flagged = s.change_candidate_flag === 'True';
+  return `<div class="signal-row">
+    <div class="signal-name">${s.COMARCA}</div>
+    <div class="signal-track"><div class="signal-fill ${flagged ? 'flagged' : ''}" style="width:${pct}%"></div></div>
+    <div class="signal-val">${score.toFixed(1)}</div>
+  </div>`;
+}).join('');
+
+// ---- Chart: Production vs NDVI (Trigo blando only, by comarca+year) ----
+const trigoData = modeling.filter(r => r.cultivo === 'Trigo blando');
+const comarcas = [...new Set(trigoData.map(r => r.comarca))];
+const years = ['2019', '2021', '2023'];
+
+const ctx1 = document.getElementById('chartProdNdvi').getContext('2d');
+new Chart(ctx1, {
+  type: 'bar',
+  data: {
+    labels: comarcas,
+    datasets: years.map((y, i) => ({
+      label: y,
+      data: comarcas.map(c => {
+        const row = trigoData.find(r => r.comarca === c && r.year === y);
+        return row ? parseFloat(row.produccion_tn) : null;
+      }),
+      backgroundColor: [COLORS.trigo, COLORS.oliva, COLORS.pizarra][i],
+      borderRadius: 3,
+    }))
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    scales: {
+      x: { ticks: { font: { size: 10 }, maxRotation: 45, minRotation: 45 } },
+      y: { title: { display: true, text: 'Producción trigo blando (t)' }, beginAtZero: true }
+    },
+    plugins: { legend: { position: 'top' } }
+  }
+});
+
+// ---- Chart: Trend, secano vs forestal, 2019 vs 2023 ----
+const secano = trend.filter(r => r.GRUPO === 'Cultivos herbáceos secano');
+const forestal = trend.filter(r => r.GRUPO === 'Forestal no arbolado');
+const trendComarcas = [...new Set(trend.map(r => r.COMARCA))];
+
+const ctx2 = document.getElementById('chartTrend').getContext('2d');
+new Chart(ctx2, {
+  type: 'bar',
+  data: {
+    labels: trendComarcas,
+    datasets: [
+      {
+        label: 'Secano 2019',
+        data: trendComarcas.map(c => { const r = secano.find(x => x.COMARCA === c); return r ? parseFloat(r.count_start) : 0; }),
+        backgroundColor: COLORS.trigo,
+        borderRadius: 3,
+      },
+      {
+        label: 'Secano 2023',
+        data: trendComarcas.map(c => { const r = secano.find(x => x.COMARCA === c); return r ? parseFloat(r.count_end) : 0; }),
+        backgroundColor: '#8a7433',
+        borderRadius: 3,
+      },
+      {
+        label: 'Forestal 2019',
+        data: trendComarcas.map(c => { const r = forestal.find(x => x.COMARCA === c); return r ? parseFloat(r.count_start) : 0; }),
+        backgroundColor: COLORS.oliva,
+        borderRadius: 3,
+      },
+      {
+        label: 'Forestal 2023',
+        data: trendComarcas.map(c => { const r = forestal.find(x => x.COMARCA === c); return r ? parseFloat(r.count_end) : 0; }),
+        backgroundColor: '#354627',
+        borderRadius: 3,
+      },
+    ]
+  },
+  options: {
+    responsive: true, maintainAspectRatio: false,
+    scales: {
+      x: { ticks: { font: { size: 10 }, maxRotation: 45, minRotation: 45 } },
+      y: { title: { display: true, text: 'Número de parcelas' }, beginAtZero: true }
+    },
+    plugins: { legend: { position: 'top', labels: { boxWidth: 12, font: { size: 11 } } } }
+  }
+});
+</script>
+</body>
+</html>
