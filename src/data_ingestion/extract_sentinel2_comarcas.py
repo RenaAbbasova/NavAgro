@@ -170,7 +170,12 @@ def build_window_feature(
     })
     properties = stats.combine(extra_properties)
 
-    return ee.Feature(None, properties)
+    # Earth Engine no permite exportar features con geometría nula a un
+    # Asset (a diferencia de FeatureCollections usadas solo en memoria).
+    # Se usa el centroide de la comarca como geometría del resultado --
+    # suficiente para identificar la ubicación sin duplicar el polígono
+    # completo en cada una de las 161 filas exportadas.
+    return ee.Feature(geometry.centroid(maxError=1), properties)
 
 
 def main() -> None:
