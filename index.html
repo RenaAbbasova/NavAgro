@@ -437,7 +437,7 @@
     <div class="method-grid">
       <div class="method-item"><h4>Manifiesto desde el inicio</h4><p>Cada archivo crudo tiene checksum SHA-256, fuente y fecha registrados desde el primer commit, no añadidos después.</p></div>
       <div class="method-item"><h4>Sin datos fabricados</h4><p>Comarcas o ventanas sin escenas satelitales válidas se omiten explícitamente — nunca se rellenan con un valor placeholder.</p></div>
-      <div class="method-item"><h4>Denominador protegido</h4><p>Los índices espectrales se diseñaron evitando el tipo de bug que en un proyecto anterior produjo valores erróneos de hasta -17 millones.</p></div>
+      <div class="method-item"><h4>Denominador protegido</h4><p>Los índices espectrales se diseñaron evitando resultados erróneos cuando el denominador se acerca a cero.</p></div>
       <div class="method-item"><h4>División temporal honesta</h4><p>Los modelos se evalúan con leave-most-recent-year-out, no con una mezcla aleatoria que filtraría información entre años.</p></div>
     </div>
   </div>
