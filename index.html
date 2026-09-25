@@ -237,7 +237,74 @@
   }
   .method-item p { margin: 0; font-size: 0.9rem; color: var(--tierra-soft); }
 
-  /* ---- Footer ---- */
+  /* ---- Tab navigation ---- */
+  nav.tabnav {
+    position: sticky;
+    top: env(safe-area-inset-top, 0px);
+    z-index: 20;
+    background: var(--crema);
+    border-bottom: 1px solid rgba(43,36,32,0.14);
+    box-shadow: 0 2px 8px rgba(43,36,32,0.06);
+  }
+  .tabnav-inner { display: flex; gap: 4px; overflow-x: auto; }
+  .tab-btn {
+    background: none;
+    border: none;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.92rem;
+    font-weight: 500;
+    color: var(--tierra-soft);
+    padding: 16px 18px;
+    cursor: pointer;
+    border-bottom: 3px solid transparent;
+    white-space: nowrap;
+    transition: color 0.15s, border-color 0.15s;
+  }
+  .tab-btn:hover { color: var(--tierra); }
+  .tab-btn.active { color: var(--tierra); border-bottom-color: var(--trigo); font-weight: 600; }
+
+  /* ---- Filter controls ---- */
+  .filters {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    margin-bottom: 20px;
+  }
+  .filter-group { display: flex; align-items: center; gap: 8px; }
+  .filter-label { font-size: 0.85rem; color: var(--tierra-soft); font-weight: 500; }
+  select.filter-select {
+    font-family: 'Inter', sans-serif;
+    font-size: 0.9rem;
+    padding: 8px 30px 8px 12px;
+    border-radius: 5px;
+    border: 1px solid rgba(43,36,32,0.22);
+    background: #fff;
+    color: var(--tierra);
+    cursor: pointer;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%232B2420'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+  }
+  select.filter-select:focus { outline: 2px solid var(--pizarra); outline-offset: 1px; }
+  .comarca-chip-row { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; }
+  .comarca-chip {
+    font-size: 0.82rem;
+    padding: 7px 14px;
+    border-radius: 999px;
+    border: 1px solid rgba(43,36,32,0.2);
+    background: #fff;
+    color: var(--tierra-soft);
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  .comarca-chip:hover { border-color: var(--pizarra); }
+  .comarca-chip.active {
+    background: var(--tierra);
+    color: var(--crema);
+    border-color: var(--tierra);
+  }
+  .comarca-chip.is-flagged.active { background: var(--terracota); border-color: var(--terracota); }
   footer {
     background: var(--tierra);
     color: var(--crema-alt);
@@ -288,7 +355,16 @@
   </div>
 </header>
 
-<section>
+<nav class="tabnav">
+  <div class="wrap tabnav-inner">
+    <button class="tab-btn active" data-target="s-hallazgo">Hallazgo</button>
+    <button class="tab-btn" data-target="s-trackA">Rendimiento</button>
+    <button class="tab-btn" data-target="s-trackB">Uso de suelo</button>
+    <button class="tab-btn" data-target="s-metodo">Metodología</button>
+  </div>
+</nav>
+
+<section id="s-hallazgo">
   <div class="wrap">
     <h2 class="section-title">El caso de Nordoccidental</h2>
     <p class="section-intro">Entre 2021 y 2023, esta comarca del noroeste de Navarra muestra el cambio más marcado de todo el proyecto — pero la historia es más matizada que un simple abandono agrícola.</p>
@@ -307,7 +383,7 @@
   </div>
 </section>
 
-<section class="alt">
+<section id="s-trackA" class="alt">
   <div class="wrap">
     <h2 class="section-title">Track A — Predicción de rendimiento</h2>
     <p class="section-intro">Tres modelos, evaluados con una división temporal honesta: se entrena con 2019 y 2021, se evalúa contra 2023 — nunca una mezcla aleatoria que filtraría información entre años.</p>
@@ -319,13 +395,22 @@
 
     <div class="chart-card">
       <h3>Producción real vs. NDVI medio anual, por comarca</h3>
-      <div class="chart-note">Trigo blando, 2019–2023. El NDVI mejora en casi todas las comarcas, pero la producción no siempre sigue el mismo patrón — la razón por la que un modelo de una sola variable no basta todavía.</div>
+      <div class="chart-note">2019–2023. El NDVI mejora en casi todas las comarcas, pero la producción no siempre sigue el mismo patrón — la razón por la que un modelo de una sola variable no basta todavía.</div>
+      <div class="filters">
+        <div class="filter-group">
+          <span class="filter-label">Cultivo:</span>
+          <select class="filter-select" id="cropSelect">
+            <option value="Trigo blando">Trigo blando</option>
+            <option value="Cebada">Cebada</option>
+          </select>
+        </div>
+      </div>
       <div class="chart-wrap"><canvas id="chartProdNdvi"></canvas></div>
     </div>
   </div>
 </section>
 
-<section>
+<section id="s-trackB">
   <div class="wrap">
     <h2 class="section-title">Track B — Tendencia de uso de suelo</h2>
     <p class="section-intro">En vez de medir un cambio binario, esta señal cuantifica la intensidad de cambio por comarca (2019→2023), combinando la pérdida de cultivo de secano y la ganancia de terreno forestal.</p>
@@ -338,13 +423,14 @@
 
     <div class="chart-card">
       <h3>Parcelas de cultivo de secano vs. terreno forestal</h3>
-      <div class="chart-note">Recuento de parcelas, 2019 vs. 2023, comarca por comarca.</div>
+      <div class="chart-note">Recuento de parcelas, 2019 vs. 2023. Haz clic en una comarca para verla sola — Nordoccidental (marcada en rojo) es la única señalada como anomalía estadística.</div>
+      <div class="comarca-chip-row" id="comarcaChips"></div>
       <div class="chart-wrap"><canvas id="chartTrend"></canvas></div>
     </div>
   </div>
 </section>
 
-<section class="alt">
+<section id="s-metodo" class="alt">
   <div class="wrap">
     <h2 class="section-title">Rigor metodológico</h2>
     <p class="section-intro">Decisiones de ingeniería tomadas desde el diseño, aplicando lecciones de un proyecto anterior (TerraYield) — no correcciones posteriores a errores encontrados.</p>
@@ -419,82 +505,130 @@ document.getElementById('signal-bars').innerHTML = sortedSignal.map(s => {
   </div>`;
 }).join('');
 
-// ---- Chart: Production vs NDVI (Trigo blando only, by comarca+year) ----
-const trigoData = modeling.filter(r => r.cultivo === 'Trigo blando');
-const comarcas = [...new Set(trigoData.map(r => r.comarca))];
-const years = ['2019', '2021', '2023'];
-
-const ctx1 = document.getElementById('chartProdNdvi').getContext('2d');
-new Chart(ctx1, {
-  type: 'bar',
-  data: {
-    labels: comarcas,
-    datasets: years.map((y, i) => ({
-      label: y,
-      data: comarcas.map(c => {
-        const row = trigoData.find(r => r.comarca === c && r.year === y);
-        return row ? parseFloat(row.produccion_tn) : null;
-      }),
-      backgroundColor: [COLORS.trigo, COLORS.oliva, COLORS.pizarra][i],
-      borderRadius: 3,
-    }))
-  },
-  options: {
-    responsive: true, maintainAspectRatio: false,
-    scales: {
-      x: { ticks: { font: { size: 10 }, maxRotation: 45, minRotation: 45 } },
-      y: { title: { display: true, text: 'Producción trigo blando (t)' }, beginAtZero: true }
-    },
-    plugins: { legend: { position: 'top' } }
-  }
+// ---- Tab navigation ----
+const tabBtns = document.querySelectorAll('.tab-btn');
+const navHeight = 52;
+tabBtns.forEach(btn => {
+  btn.addEventListener('click', () => {
+    const target = document.getElementById(btn.dataset.target);
+    const y = target.getBoundingClientRect().top + window.scrollY - navHeight - 8;
+    window.scrollTo({ top: y, behavior: 'smooth' });
+  });
 });
+const sectionIds = ['s-hallazgo', 's-trackA', 's-trackB', 's-metodo'];
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      tabBtns.forEach(b => b.classList.toggle('active', b.dataset.target === entry.target.id));
+    }
+  });
+}, { rootMargin: `-${navHeight + 40}px 0px -60% 0px` });
+sectionIds.forEach(id => { const el = document.getElementById(id); if (el) observer.observe(el); });
 
-// ---- Chart: Trend, secano vs forestal, 2019 vs 2023 ----
+// ---- Chart: Production vs NDVI (interactive crop filter) ----
+const years = ['2019', '2021', '2023'];
+let chartProdNdvi;
+function renderProdChart(crop) {
+  const cropData = modeling.filter(r => r.cultivo === crop);
+  const comarcasList = [...new Set(cropData.map(r => r.comarca))];
+  const datasets = years.map((y, i) => ({
+    label: y,
+    data: comarcasList.map(c => {
+      const row = cropData.find(r => r.comarca === c && r.year === y);
+      return row ? parseFloat(row.produccion_tn) : null;
+    }),
+    backgroundColor: [COLORS.trigo, COLORS.oliva, COLORS.pizarra][i],
+    borderRadius: 3,
+  }));
+  if (chartProdNdvi) {
+    chartProdNdvi.data.labels = comarcasList;
+    chartProdNdvi.data.datasets = datasets;
+    chartProdNdvi.options.scales.y.title.text = `Producción ${crop} (t)`;
+    chartProdNdvi.update();
+  } else {
+    const ctx1 = document.getElementById('chartProdNdvi').getContext('2d');
+    chartProdNdvi = new Chart(ctx1, {
+      type: 'bar',
+      data: { labels: comarcasList, datasets },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        scales: {
+          x: { ticks: { font: { size: 10 }, maxRotation: 45, minRotation: 45 } },
+          y: { title: { display: true, text: `Producción ${crop} (t)` }, beginAtZero: true }
+        },
+        plugins: { legend: { position: 'top' } }
+      }
+    });
+  }
+}
+document.getElementById('cropSelect').addEventListener('change', (e) => renderProdChart(e.target.value));
+renderProdChart('Trigo blando');
+
+// ---- Chart: Trend, secano vs forestal (interactive comarca filter) ----
 const secano = trend.filter(r => r.GRUPO === 'Cultivos herbáceos secano');
 const forestal = trend.filter(r => r.GRUPO === 'Forestal no arbolado');
-const trendComarcas = [...new Set(trend.map(r => r.COMARCA))];
+const allTrendComarcas = [...new Set(trend.map(r => r.COMARCA))];
+const flaggedComarcas = new Set(signal.filter(s => s.change_candidate_flag === 'True').map(s => s.COMARCA));
 
-const ctx2 = document.getElementById('chartTrend').getContext('2d');
-new Chart(ctx2, {
-  type: 'bar',
-  data: {
-    labels: trendComarcas,
-    datasets: [
-      {
-        label: 'Secano 2019',
-        data: trendComarcas.map(c => { const r = secano.find(x => x.COMARCA === c); return r ? parseFloat(r.count_start) : 0; }),
-        backgroundColor: COLORS.trigo,
-        borderRadius: 3,
-      },
-      {
-        label: 'Secano 2023',
-        data: trendComarcas.map(c => { const r = secano.find(x => x.COMARCA === c); return r ? parseFloat(r.count_end) : 0; }),
-        backgroundColor: '#8a7433',
-        borderRadius: 3,
-      },
-      {
-        label: 'Forestal 2019',
-        data: trendComarcas.map(c => { const r = forestal.find(x => x.COMARCA === c); return r ? parseFloat(r.count_start) : 0; }),
-        backgroundColor: COLORS.oliva,
-        borderRadius: 3,
-      },
-      {
-        label: 'Forestal 2023',
-        data: trendComarcas.map(c => { const r = forestal.find(x => x.COMARCA === c); return r ? parseFloat(r.count_end) : 0; }),
-        backgroundColor: '#354627',
-        borderRadius: 3,
-      },
-    ]
-  },
-  options: {
-    responsive: true, maintainAspectRatio: false,
-    scales: {
-      x: { ticks: { font: { size: 10 }, maxRotation: 45, minRotation: 45 } },
-      y: { title: { display: true, text: 'Número de parcelas' }, beginAtZero: true }
-    },
-    plugins: { legend: { position: 'top', labels: { boxWidth: 12, font: { size: 11 } } } }
+let chartTrend;
+let selectedComarcas = new Set(allTrendComarcas);
+
+function renderTrendChart() {
+  const active = allTrendComarcas.filter(c => selectedComarcas.has(c));
+  const datasets = [
+    { label: 'Secano 2019', backgroundColor: COLORS.trigo,
+      data: active.map(c => { const r = secano.find(x => x.COMARCA === c); return r ? parseFloat(r.count_start) : 0; }) },
+    { label: 'Secano 2023', backgroundColor: '#8a7433',
+      data: active.map(c => { const r = secano.find(x => x.COMARCA === c); return r ? parseFloat(r.count_end) : 0; }) },
+    { label: 'Forestal 2019', backgroundColor: COLORS.oliva,
+      data: active.map(c => { const r = forestal.find(x => x.COMARCA === c); return r ? parseFloat(r.count_start) : 0; }) },
+    { label: 'Forestal 2023', backgroundColor: '#354627',
+      data: active.map(c => { const r = forestal.find(x => x.COMARCA === c); return r ? parseFloat(r.count_end) : 0; }) },
+  ].map(d => ({ ...d, borderRadius: 3 }));
+
+  if (chartTrend) {
+    chartTrend.data.labels = active;
+    chartTrend.data.datasets = datasets;
+    chartTrend.update();
+  } else {
+    const ctx2 = document.getElementById('chartTrend').getContext('2d');
+    chartTrend = new Chart(ctx2, {
+      type: 'bar',
+      data: { labels: active, datasets },
+      options: {
+        responsive: true, maintainAspectRatio: false,
+        scales: {
+          x: { ticks: { font: { size: 10 }, maxRotation: 45, minRotation: 45 } },
+          y: { title: { display: true, text: 'Número de parcelas' }, beginAtZero: true }
+        },
+        plugins: { legend: { position: 'top', labels: { boxWidth: 12, font: { size: 11 } } } }
+      }
+    });
   }
-});
+}
+
+function renderChips() {
+  const chipsEl = document.getElementById('comarcaChips');
+  chipsEl.innerHTML = allTrendComarcas.map(c => {
+    const isFlagged = flaggedComarcas.has(c);
+    const isActive = selectedComarcas.has(c);
+    return `<button class="comarca-chip ${isActive ? 'active' : ''} ${isFlagged ? 'is-flagged' : ''}" data-comarca="${c}">${c}${isFlagged ? ' ⚠' : ''}</button>`;
+  }).join('');
+  chipsEl.querySelectorAll('.comarca-chip').forEach(chip => {
+    chip.addEventListener('click', () => {
+      const c = chip.dataset.comarca;
+      if (selectedComarcas.has(c)) {
+        if (selectedComarcas.size > 1) selectedComarcas.delete(c);
+      } else {
+        selectedComarcas.add(c);
+      }
+      renderChips();
+      renderTrendChart();
+    });
+  });
+}
+renderChips();
+renderTrendChart();
 </script>
 </body>
 </html>
