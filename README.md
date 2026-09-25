@@ -1,8 +1,8 @@
 # NavAgro — Analítica de IA para el Uso de Suelo Agrícola y Rendimiento de Cultivos en Navarra
 
-Proyecto personal de investigación que combina imágenes satelitales (Sentinel-2), estadísticas oficiales de producción agrícola y cartografía de uso de suelo para analizar tendencias agrícolas reales en las 7 comarcas de Navarra (España).
+**🌾 [Ver el dashboard interactivo en vivo →](https://renaabbasova.github.io/NavAgro/)**
 
-Inspirado en la metodología de [TerraYield](https://github.com/OmdenaAI/TerraYield-2), un proyecto colaborativo de predicción de rendimiento de cultivos a escala internacional, aplicando sus lecciones de ingeniería de datos desde el diseño inicial.
+Proyecto personal de investigación que combina imágenes satelitales (Sentinel-2), estadísticas oficiales de producción agrícola y cartografía de uso de suelo para analizar tendencias agrícolas reales en las 7 comarcas de Navarra (España).
 
 ## Hallazgo principal
 
@@ -37,14 +37,14 @@ La cebada cae junto con la superficie cultivada, pero el trigo blando **crece a 
 
 Con solo 28 filas de entrenamiento (7 comarcas × 2 cultivos × 2 años), el NDVI por sí solo todavía no supera a la línea base más simple — resultado honesto que refleja el tamaño actual de la muestra, no una limitación del enfoque. La Media Histórica ya explica el 58.5% de la varianza, un piso sólido sobre el cual construir.
 
-## Lecciones de ingeniería aplicadas desde el diseño
+## Rigor de ingeniería aplicado desde el diseño
 
-Este proyecto aplica, desde el primer commit, varias lecciones aprendidas en un proyecto anterior (TerraYield):
+Este proyecto aplica, desde el primer commit, varias decisiones deliberadas de calidad de datos:
 
 - **Manifiesto de datos desde el inicio** — cada archivo crudo tiene checksum SHA-256, fuente y fecha registrados (`data/manifest.jsonl`), no añadido después.
 - **Nunca fabricar valores faltantes** — si Earth Engine no encuentra escenas válidas para una comarca/ventana, esa fila se omite explícitamente, nunca se rellena con un placeholder.
 - **`cloud_cover_pct` siempre real** — leído del metadato de cada escena, nunca un valor fijo.
-- **Índices espectrales con denominador protegido** — evitando el tipo de bug (EVI con denominador cercano a cero) que en TerraYield produjo valores erróneos de hasta -17 millones.
+- **Índices espectrales con denominador protegido** — evitando resultados erróneos cuando el denominador de un índice se acerca a cero.
 - **Exportación asíncrona a GEE Assets, no a Google Drive** — el Drive de una cuenta de servicio pertenece a esa cuenta, no al usuario.
 - **Validación cruzada de nombres geográficos** — Nastat usa "Noroccidental"; la cartografía oficial usa "Nordoccidental". Documentado y corregido explícitamente, no descubierto por accidente.
 
@@ -67,10 +67,10 @@ NavAgro/
 
 ## Estado del proyecto
 
-- [x] **Sprint 1** — Ingeniería de datos (comarcas, producción, uso de suelo, manifiesto)
-- [x] **Sprint 2** — Pipeline satelital (Sentinel-2, 3 años, 7 comarcas)
-- [x] **Sprint 3** — Primer benchmark de rendimiento (en progreso: mejorando features)
-- [ ] **Sprint 4** — Dashboard de visualización
+- [x] Ingeniería de datos (comarcas, producción, uso de suelo, manifiesto)
+- [x] Pipeline satelital (Sentinel-2, 3 años, 7 comarcas)
+- [x] Primer benchmark de rendimiento (en progreso: mejorando features)
+- [x] Dashboard de visualización
 
 ## Cómo reproducir
 
